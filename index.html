@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dynamic Line Chart with Google Charts</title>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+  <div>
+    <label for="transactionType">Transaction Type:</label>
+    <select id="transactionType" onchange="drawChart()">
+      <option value="all">All</option>
+      <option value="APPROVAL">Approved</option>
+      <option value="DECLINED">Declined</option>
+    </select>
+  </div>
+  <div id="chart_div"></div>
+  <script>
+// Function to parse the CSV data into an array of objects
+function parseCSVData(csvData) {
+  return Papa.parse(csvData, { header: true }).data;
+}
+
+// Function to prepare the data for the chart
+function prepareChartData(data, transactionType) {
+  const transactionCounts = {};
+
+  // Calculate the transaction counts for each hour of the day
+  data.forEach(row => {
+    if (transactionType === 'all' || row.transaction_status === transactionType) {
+      const hour = row.hour;
+      if (!transactionCounts[hour]) {
+        transactionCounts[hour] = 1;
+      } else {
+        transactionCounts[hour]++;
+      }
+    }
+  });
+
+  const chartData = [['Hour', 'Transaction Count']];
+  for (let hour = 0; hour < 24; hour++) {
+    const count = transactionCounts[hour] || 0;
+    chartData.push([hour, count]);
+  }
+
+  return chartData;
+}
+
+// Function to draw the chart
+function drawChart(chartData) {
+  const data = google.visualization.arrayToDataTable(chartData);
+
+  const options = {
+    title: 'Transaction Count per Hour of the Day',
+    legend: { position: 'none' },
+    chartArea: { width: '80%', height: '70%' },
+    hAxis: {
+      title: 'Hour',
+      textStyle: {
+        color: '#FFFFFF' // Text color for the axis labels
+      }
+    },
+    vAxis: {
+      title: 'Transaction Count',
+      textStyle: {
+        color: '#FFFFFF' // Text color for the axis labels
+      }
+    },
+    backgroundColor: '#27293d', // Background color for the chart
+    colors: ['#1f78b4'], // Line color
+    titleTextStyle: {
+      color: '#FFFFFF' // Text color for the chart title
+    },
+  };
+
+  const chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+  chart.draw(data, options);
+}
+
+// Step 2: Load the data from the CSV file
+async function loadCSVData() {
+  try {
+    const response = await fetch('DATA_NEW.csv'); // Replace 'DATA_NEW.csv' with the correct file path if needed.
+    const csvData = await response.text();
+
+    // Parse the CSV data into an array of objects
+    const data = parseCSVData(csvData);
+
+    // Set up event listener for the select element
+    const selectElement = document.getElementById('transactionType');
+    selectElement.addEventListener('change', () => {
+      const transactionType = selectElement.value;
+      const chartData = prepareChartData(data, transactionType);
+      drawChart(chartData);
+    });
+
+    // Step 4: Create the Google Chart
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(() => {
+      const transactionType = selectElement.value;
+      const chartData = prepareChartData(data, transactionType);
+      drawChart(chartData);
+    });
+  } catch (error) {
+    console.error('Error loading or parsing CSV file:', error);
+  }
+}
+
+// Call the function to load the CSV data and set up the chart
+loadCSVData();
+
+  </script>
+</body>
+</html>
