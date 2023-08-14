@@ -1,114 +1,209 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <title>Dynamic Line Chart with Google Charts</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <!-- Nucleo Icons -->
+  <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link href="./assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
+
+  <title>Dashboard | Google Charts</title>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+  <script src="./js/google-charts.js"></script>
+
 </head>
-<body>
-  <div>
-    <label for="transactionType">Transaction Type:</label>
-    <select id="transactionType" onchange="drawChart()">
-      <option value="all">All</option>
-      <option value="APPROVAL">Approved</option>
-      <option value="DECLINED">Declined</option>
-    </select>
+
+<body class="">
+  <div class="wrapper">
+    <div class="sidebar" data="blue">
+      <div class="sidebar-wrapper">
+        <div class="logo">
+          <a href="javascript:void(0)" class="simple-text logo-normal">
+            DATA1.csv
+          </a>
+        </div>
+        <ul class="nav">
+          <li class="active ">
+            <a href="./index.html">
+              <i class="tim-icons icon-chart-pie-36 active"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+          <li>
+            <a href="./html/looker.html">
+              <i class="tim-icons icon-atom"></i>
+              <p>LookerStudio</p>
+            </a>
+          </li>
+          <li>
+            <a href="./html/powerBI.html">
+              <i class="tim-icons icon-atom"></i>
+              <p>Power BI</p>
+            </a>
+          </li>
+          <li>
+            <a href="./html/tableau.html">
+              <i class="tim-icons icon-atom"></i>
+              <p>Tableau</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel" data="blue">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <!-- <div class="navbar-toggle d-inline">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div> -->
+            <br><br>
+            <a class="navbar-brand" href="javascript:void(0)">Dashboard</a>
+          </div>
+
+        </div>
+      </nav>
+
+      <!-- End Navbar -->
+      <div class="content">
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-chart">
+              <div class="card-header ">
+                <div class="row">
+                  <div class="col-sm-6 text-left">
+                    <h5 class="card-category">Transacciones</h5>
+                    <h3 class="card-title"><i class="tim-icons icon-cart text-primary"></i> Transacciones realizadas por
+                      hora del día
+                    </h3>
+                  </div>
+                  <div class="col-sm-6">
+                    <!-- <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                      <label class="btn btn-sm btn-primary btn-simple active" id="all">
+                        <input type="radio" name="options" checked>
+                        <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Todos</span>
+                      </label>
+                      <label class="btn btn-sm btn-primary btn-simple" id="APPROVAL">
+                        <input type="radio" class="d-none d-sm-none" name="options">
+                        <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Aprovado</span>
+                      </label>
+                      <label class="btn btn-sm btn-primary btn-simple" id="DECLINED">
+                        <input type="radio" class="d-none" name="options">
+                        <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Rechazada</span>
+                      </label>
+                    </div> -->
+
+                    <label for="transactionType">Transacción:</label>
+                    <select id="transactionType" onchange="drawChart()">
+                      <option value="all">Todas</option>
+                      <option value="APPROVAL">Aprovado</option>
+                      <option value="DECLINED">Rechazada</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+
+                <div id="line_chart" style="width: auto; height: 400px;"></div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="card card-chart">
+              <div class="card-header">
+                <h5 class="card-category">Transacciones</h5>
+                <h3 class="card-title"><i class="tim-icons icon-chart-pie-36 text-info"></i> Total de Transacciones
+                </h3>
+              </div>
+              <div class="card-body">
+
+                <div id="pie_chart" style="width: auto; height: 300px;"></div>
+
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card card-chart">
+              <div class="card-header">
+                <h5 class="card-category">Transacciones</h5>
+                <h3 class="card-title"><i class="tim-icons icon-chart-bar-32 text-info"></i> Transacciones realizadas
+                  por
+                  hora del día</h3>
+              </div>
+              <div class="card-body">
+
+                <div id="column_chart" style="width: auto; height: 300px;"></div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="card card-chart">
+              <div class="card-header">
+                <h5 class="card-category">Transacciones</h5>
+                <h3 class="card-title"><i class="tim-icons icon-check-2 text-info"></i> Estado de transacción por
+                  marca</h3> <!-- icon-bag-16 -->
+              </div>
+              <div class="card-body">
+
+                <div id="bar_chart" style="width: auto; height: 300px;"></div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card card-chart">
+              <div class="card-header">
+                <h5 class="card-category">Transacciones</h5>
+                <h3 class="card-title"><i class="tim-icons icon-components text-info"></i> Transacciones realizadas por
+                  hora del día</h3>
+              </div>
+              <div class="card-body">
+
+                <div id="area_chart" style="width: auto; height: 300px;"></div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="chart_div"></div>
-  <script>
-// Function to parse the CSV data into an array of objects
-function parseCSVData(csvData) {
-  return Papa.parse(csvData, { header: true }).data;
-}
+  <!--   Core JS Files   -->
+  <script src="./assets/js/core/jquery.min.js"></script>
+  <script src="./assets/js/core/popper.min.js"></script>
+  <script src="./assets/js/core/bootstrap.min.js"></script>
+  <script src="./assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
 
-// Function to prepare the data for the chart
-function prepareChartData(data, transactionType) {
-  const transactionCounts = {};
-
-  // Calculate the transaction counts for each hour of the day
-  data.forEach(row => {
-    if (transactionType === 'all' || row.transaction_status === transactionType) {
-      const hour = row.hour;
-      if (!transactionCounts[hour]) {
-        transactionCounts[hour] = 1;
-      } else {
-        transactionCounts[hour]++;
-      }
-    }
-  });
-
-  const chartData = [['Hour', 'Transaction Count']];
-  for (let hour = 0; hour < 24; hour++) {
-    const count = transactionCounts[hour] || 0;
-    chartData.push([hour, count]);
-  }
-
-  return chartData;
-}
-
-// Function to draw the chart
-function drawChart(chartData) {
-  const data = google.visualization.arrayToDataTable(chartData);
-
-  const options = {
-    title: 'Transaction Count per Hour of the Day',
-    legend: { position: 'none' },
-    chartArea: { width: '80%', height: '70%' },
-    hAxis: {
-      title: 'Hour',
-      textStyle: {
-        color: '#FFFFFF' // Text color for the axis labels
-      }
-    },
-    vAxis: {
-      title: 'Transaction Count',
-      textStyle: {
-        color: '#FFFFFF' // Text color for the axis labels
-      }
-    },
-    backgroundColor: '#27293d', // Background color for the chart
-    colors: ['#1f78b4'], // Line color
-    titleTextStyle: {
-      color: '#FFFFFF' // Text color for the chart title
-    },
-  };
-
-  const chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-  chart.draw(data, options);
-}
-
-// Step 2: Load the data from the CSV file
-async function loadCSVData() {
-  try {
-    const response = await fetch('DATA_NEW.csv'); // Replace 'DATA_NEW.csv' with the correct file path if needed.
-    const csvData = await response.text();
-
-    // Parse the CSV data into an array of objects
-    const data = parseCSVData(csvData);
-
-    // Set up event listener for the select element
-    const selectElement = document.getElementById('transactionType');
-    selectElement.addEventListener('change', () => {
-      const transactionType = selectElement.value;
-      const chartData = prepareChartData(data, transactionType);
-      drawChart(chartData);
-    });
-
-    // Step 4: Create the Google Chart
-    google.charts.load('current', { 'packages': ['corechart'] });
-    google.charts.setOnLoadCallback(() => {
-      const transactionType = selectElement.value;
-      const chartData = prepareChartData(data, transactionType);
-      drawChart(chartData);
-    });
-  } catch (error) {
-    console.error('Error loading or parsing CSV file:', error);
-  }
-}
-
-// Call the function to load the CSV data and set up the chart
-loadCSVData();
+  <script src="./assets/js/plugins/bootstrap-notify.js"></script>
 
   </script>
 </body>
+
 </html>
